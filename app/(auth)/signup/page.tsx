@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AuthShell } from "@/components/auth/AuthShell";
@@ -12,6 +13,7 @@ import { createClient } from "@/lib/supabase/client";
 import { signupSchema, type SignupInput } from "@/lib/validations/auth";
 
 export default function SignupPage() {
+  const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const {
@@ -23,7 +25,7 @@ export default function SignupPage() {
   async function onSubmit(data: SignupInput) {
     setServerError(null);
     const supabase = createClient();
-    const { error } = await supabase.auth.signUp({
+    const { data: signUpData, error } = await supabase.auth.signUp({
       email: data.email,
       password: data.password,
       options: {
@@ -34,6 +36,15 @@ export default function SignupPage() {
 
     if (error) {
       setServerError(error.message);
+      return;
+    }
+
+    // When email confirmation is disabled in the Supabase project, signUp
+    // returns an active session immediately — go straight to onboarding
+    // instead of showing a "check your inbox" screen that never resolves.
+    if (signUpData.session) {
+      router.push("/onboarding");
+      router.refresh();
       return;
     }
 
