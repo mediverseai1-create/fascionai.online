@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+:root {
+  --wine: #5c1a34;
+  --wine-dark: #421326;
+  --ink: #1b1720;
+  --paper: #f7f4ef;
+  --card: #ffffff;
+  --line: #e4ded4;
+  --brass: #a9824c;
+  --brass-soft: #efe4d0;
+  --good: #2e6b4f;
+  --good-soft: #e4eee7;
+  --risk: #aa3b2e;
+  --risk-soft: #f5e4e0;
+  --muted: #6b6470;
+  --shadow: 0 1px 2px rgba(27, 23, 32, 0.04);
+  --shadow-hover: 0 8px 20px rgba(27, 23, 32, 0.08);
+  --radius: 3px;
+}
+
+@theme inline {
+  --color-wine: var(--wine);
+  --color-wine-dark: var(--wine-dark);
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-card: var(--card);
+  --color-line: var(--line);
+  --color-brass: var(--brass);
+  --color-brass-soft: var(--brass-soft);
+  --color-good: var(--good);
+  --color-good-soft: var(--good-soft);
+  --color-risk: var(--risk);
+  --color-risk-soft: var(--risk-soft);
+  --color-muted: var(--muted);
+  --font-serif: var(--font-fraunces);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-plex-mono);
+  --radius-facsion: var(--radius);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+a {
+  color: inherit;
+}
+
+.wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+@media (max-width: 560px) {
+  .wrap {
+    padding: 0 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  html {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

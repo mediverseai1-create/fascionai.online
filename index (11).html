@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Facsion AI — Inventory Intelligence for Fashion Retail</title>
+<meta name="description" content="Facsion AI turns your sales and inventory data into clear reorder, markdown, and allocation decisions — built for fashion retailers and brands.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --wine:#5C1A34;
+    --wine-dark:#421326;
+    --ink:#1B1720;
+    --paper:#F7F4EF;
+    --card:#FFFFFF;
+    --line:#E4DED4;
+    --brass:#A9824C;
+    --brass-soft:#EFE4D0;
+    --good:#2E6B4F;
+    --good-soft:#E4EEE7;
+    --risk:#AA3B2E;
+    --risk-soft:#F5E4E0;
+    --muted:#6B6470;
+    --shadow: 0 1px 2px rgba(27,23,32,0.04);
+    --shadow-hover: 0 8px 20px rgba(27,23,32,0.08);
+    --radius: 3px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+  }
+  h1,h2,h3,h4{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  p{margin:0;}
+  a{color:inherit;text-decoration:none;}
+  img,svg{display:block;max-width:100%;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 32px;}
+  .eyebrow{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--muted);
+    border-left:2px solid var(--brass);
+    padding-left:10px;
+    margin-bottom:18px;
+  }
+  .eyebrow.on-wine{color:rgba(255,255,255,0.75);border-left-color:var(--brass);}
+  button{font-family:inherit;cursor:pointer;}
+
+  /* ---------- Buttons ---------- */
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:13px 24px;
+    border-radius:var(--radius);
+    font-size:14.5px;
+    font-weight:600;
+    border:1px solid transparent;
+    transition:box-shadow .15s ease, transform .15s ease, background .15s ease;
+    white-space:nowrap;
+  }
+  .btn-primary{background:var(--ink);color:#fff;}
+  .btn-primary:hover{box-shadow:var(--shadow-hover);transform:translateY(-1px);}
+  .btn-wine{background:var(--brass);color:var(--wine-dark);}
+  .btn-wine:hover{box-shadow:0 8px 20px rgba(169,130,76,0.35);transform:translateY(-1px);}
+  .btn-ghost{background:transparent;color:var(--ink);border-color:var(--line);}
+  .btn-ghost:hover{border-color:var(--ink);}
+  .btn-ghost-wine{background:transparent;color:#fff;border-color:rgba(255,255,255,0.35);}
+  .btn-ghost-wine:hover{border-color:#fff;}
+  .btn-sm{padding:9px 16px;font-size:13.5px;}
+
+  /* ---------- Header ---------- */
+  header{
+    position:sticky;top:0;z-index:40;
+    background:rgba(247,244,239,0.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 0;
+  }
+  .logo{display:flex;align-items:center;gap:10px;}
+  .logo-word{font-family:'Fraunces',serif;font-size:20px;font-weight:600;letter-spacing:-0.01em;}
+  .logo-word span{color:var(--brass);}
+  .nav-links{display:flex;align-items:center;gap:34px;}
+  .nav-links a{font-size:14.5px;font-weight:500;color:var(--ink);}
+  .nav-links a:hover{color:var(--wine);}
+  .nav-cta{display:flex;align-items:center;gap:12px;}
+  .nav-toggle{display:none;background:none;border:none;padding:6px;}
+  .nav-toggle svg{width:22px;height:22px;}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    background:var(--wine);
+    color:#fff;
+    padding:76px 0 0;
+    overflow:hidden;
+  }
+  .hero-grid{
+    max-width:700px;
+    margin:0 auto;
+    text-align:center;
+  }
+  .hero h1{
+    font-size:clamp(34px,4.4vw,53px);
+    line-height:1.08;
+    font-weight:500;
+    color:#fff;
+  }
+  .hero h1 em{font-style:italic;color:var(--brass-soft);font-weight:500;}
+  .hero-sub{
+    margin:20px auto 0;
+    font-size:17px;
+    line-height:1.6;
+    color:rgba(255,255,255,0.78);
+    max-width:480px;
+  }
+  .hero-ctas{display:flex;gap:14px;margin-top:32px;flex-wrap:wrap;justify-content:center;}
+  .hero-note{margin-top:16px;font-size:12.5px;color:rgba(255,255,255,0.55);}
+
+  .kpi-row{
+    display:grid;grid-template-columns:repeat(3,1fr);
+    gap:0;
+    margin-top:56px;
+    border-top:1px solid rgba(255,255,255,0.16);
+  }
+  .kpi{padding:22px 0 30px;border-right:1px solid rgba(255,255,255,0.16);}
+  .kpi:last-child{border-right:none;}
+  .kpi-num{font-family:'Fraunces',serif;font-size:32px;font-weight:500;color:#fff;}
+  .kpi-num span{color:var(--brass-soft);}
+  .kpi-label{margin-top:6px;font-size:12.5px;color:rgba(255,255,255,0.6);letter-spacing:0.02em;}
+
+  /* ---------- Section basics ---------- */
+  section{padding:96px 0;}
+  .section-head{max-width:620px;margin-bottom:52px;}
+  .section-head h2{font-size:clamp(26px,3vw,36px);line-height:1.18;}
+  .section-head p{margin-top:14px;font-size:16px;color:var(--muted);line-height:1.6;}
+  .divider{height:1px;background:var(--line);border:none;margin:0;}
+
+  /* ---------- Problem stats ---------- */
+  .stats-band{background:var(--card);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);}
+  .stat{padding:44px 32px;border-right:1px solid var(--line);}
+  .stat:last-child{border-right:none;}
+  .stat-num{font-family:'Fraunces',serif;font-size:38px;color:var(--wine);}
+  .stat-num sup{font-size:18px;top:-14px;}
+  .stat-text{margin-top:10px;font-size:14px;color:var(--muted);line-height:1.5;}
+
+  /* ---------- Feature panels (product) ---------- */
+  .panels{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .panel{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:26px;
+    transition:box-shadow .15s ease, transform .15s ease;
+  }
+  .panel:hover{box-shadow:var(--shadow-hover);transform:translateY(-2px);}
+  .panel-icon{
+    width:34px;height:34px;
+    display:flex;align-items:center;justify-content:center;
+    border-radius:var(--radius);
+    margin-bottom:18px;
+  }
+  .panel-icon.good{background:var(--good-soft);color:var(--good);}
+  .panel-icon.risk{background:var(--risk-soft);color:var(--risk);}
+  .panel-icon.brass{background:var(--brass-soft);color:var(--brass);}
+  .panel h3{font-size:18px;font-weight:600;margin-bottom:8px;}
+  .panel p{font-size:14.5px;color:var(--muted);line-height:1.55;}
+  .panel-figure{
+    margin-top:16px;padding-top:14px;border-top:1px solid var(--line);
+    font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink);
+    display:flex;justify-content:space-between;
+  }
+  .panel-figure b.up{color:var(--good);}
+  .panel-figure b.down{color:var(--risk);}
+
+  /* ---------- Dashboard mockup ---------- */
+  .dash{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    overflow:hidden;
+    box-shadow:var(--shadow);
+  }
+  .dash-top{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 22px;border-bottom:1px solid var(--line);
+    background:#FBFAF7;
+  }
+  .dash-dots{display:flex;gap:6px;}
+  .dash-dots span{width:8px;height:8px;border-radius:50%;background:var(--line);}
+  .dash-title{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted);}
+  .dash-body{display:grid;grid-template-columns:1.3fr 1fr;gap:0;}
+  .dash-col{padding:24px;}
+  .dash-col + .dash-col{border-left:1px solid var(--line);}
+  .dash-row-title{font-size:12.5px;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin-bottom:16px;}
+  .sku-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);}
+  .sku-row:last-child{border-bottom:none;}
+  .sku-name{font-size:14px;}
+  .sku-name small{display:block;color:var(--muted);font-size:12px;font-family:'IBM Plex Mono',monospace;margin-top:2px;}
+  .tag{font-family:'IBM Plex Mono',monospace;font-size:11px;padding:3px 8px;border-radius:2px;font-weight:500;}
+  .tag.good{background:var(--good-soft);color:var(--good);}
+  .tag.risk{background:var(--risk-soft);color:var(--risk);}
+  .tag.watch{background:var(--brass-soft);color:var(--brass);}
+  .bars{display:flex;align-items:flex-end;gap:6px;height:120px;margin-top:6px;}
+  .bar{flex:1;background:var(--brass-soft);border-radius:1px 1px 0 0;position:relative;}
+  .bar.now{background:var(--wine);}
+  .bars-labels{display:flex;gap:6px;margin-top:8px;}
+  .bars-labels span{flex:1;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);}
+
+  /* ---------- How it works ---------- */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--line);}
+  .step{padding:30px 26px 0;border-right:1px solid var(--line);}
+  .step:last-child{border-right:none;}
+  .step-num{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--brass);margin-bottom:14px;}
+  .step h3{font-size:17px;font-weight:600;margin-bottom:8px;}
+  .step p{font-size:14px;color:var(--muted);line-height:1.55;}
+
+  /* ---------- Integrations ---------- */
+  .integrations{background:var(--ink);color:#fff;}
+  .int-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:10px;}
+  .int-card{border:1px solid rgba(255,255,255,0.14);border-radius:var(--radius);padding:22px;}
+  .int-card h4{font-size:15.5px;font-weight:600;color:#fff;margin-bottom:6px;}
+  .int-card p{font-size:13.5px;color:rgba(255,255,255,0.6);line-height:1.5;}
+  .int-card .mono{display:block;margin-top:12px;font-size:11px;color:var(--brass-soft);letter-spacing:0.04em;}
+  .integrations .section-head p{color:rgba(255,255,255,0.6);}
+  .integrations .section-head h2{color:#fff;}
+
+  /* ---------- Pricing ---------- */
+  .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:stretch;}
+  .price-card{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:30px 26px;display:flex;flex-direction:column;
+  }
+  .price-card.featured{
+    border-color:var(--wine);
+    box-shadow:0 10px 30px rgba(92,26,52,0.14);
+    position:relative;
+  }
+  .price-badge{
+    position:absolute;top:-12px;left:26px;
+    background:var(--wine);color:#fff;font-family:'IBM Plex Mono',monospace;
+    font-size:11px;letter-spacing:0.06em;text-transform:uppercase;
+    padding:4px 10px;border-radius:2px;
+  }
+  .price-name{font-size:15px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;}
+  .price-amount{font-family:'Fraunces',serif;font-size:44px;margin-top:14px;color:var(--ink);}
+  .price-amount span{font-size:15px;font-family:'Inter',sans-serif;color:var(--muted);font-weight:500;}
+  .price-desc{margin-top:10px;font-size:13.5px;color:var(--muted);line-height:1.5;}
+  .price-list{list-style:none;padding:0;margin:26px 0 28px;flex:1;}
+  .price-list li{
+    display:flex;gap:10px;align-items:flex-start;
+    font-size:14px;padding:8px 0;border-top:1px solid var(--line);
+  }
+  .price-list li:first-child{border-top:none;}
+  .price-list svg{flex-shrink:0;margin-top:3px;width:14px;height:14px;color:var(--good);}
+
+  /* ---------- Testimonial ---------- */
+  .testimonial{background:var(--brass-soft);}
+  .quote{
+    max-width:760px;margin:0 auto;text-align:left;
+  }
+  .quote p{font-family:'Fraunces',serif;font-style:italic;font-size:clamp(22px,2.6vw,30px);line-height:1.4;color:var(--wine-dark);}
+  .quote-attr{display:flex;align-items:center;gap:14px;margin-top:28px;}
+  .quote-avatar{width:42px;height:42px;border-radius:50%;background:var(--wine);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:16px;}
+  .quote-name{font-size:14.5px;font-weight:600;}
+  .quote-role{font-size:13px;color:var(--muted);}
+
+  /* ---------- FAQ ---------- */
+  .faq-item{border-top:1px solid var(--line);}
+  .faq-item:last-child{border-bottom:1px solid var(--line);}
+  .faq-q{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:22px 0;font-size:16px;font-weight:600;
+    background:none;border:none;width:100%;text-align:left;color:var(--ink);
+  }
+  .faq-q svg{flex-shrink:0;width:16px;height:16px;transition:transform .2s ease;color:var(--brass);}
+  .faq-item.open .faq-q svg{transform:rotate(45deg);}
+  .faq-a{max-height:0;overflow:hidden;transition:max-height .25s ease;}
+  .faq-a p{padding-bottom:22px;font-size:14.5px;color:var(--muted);line-height:1.6;max-width:640px;}
+
+  /* ---------- CTA ---------- */
+  .cta-band{background:var(--wine);color:#fff;text-align:center;}
+  .cta-band h2{color:#fff;font-size:clamp(26px,3.4vw,38px);max-width:620px;margin:0 auto;line-height:1.2;}
+  .cta-band p{margin-top:14px;color:rgba(255,255,255,0.72);font-size:15.5px;}
+  .cta-actions{display:flex;gap:14px;justify-content:center;margin-top:30px;}
+
+  /* ---------- Footer ---------- */
+  footer{padding:64px 0 32px;}
+  .footer-grid{display:grid;grid-template-columns:1.4fr repeat(4,1fr);gap:32px;}
+  .footer-brand p{margin-top:14px;font-size:13.5px;color:var(--muted);max-width:220px;line-height:1.55;}
+  .footer-col h5{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
+  .footer-col a{display:block;font-size:14px;color:var(--ink);margin-bottom:10px;}
+  .footer-col a:hover{color:var(--wine);}
+  .footer-bottom{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-top:56px;padding-top:24px;border-top:1px solid var(--line);
+    font-size:12.5px;color:var(--muted);flex-wrap:wrap;gap:12px;
+  }
+
+  /* ---------- Modal ---------- */
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(27,23,32,0.55);
+    display:none;align-items:center;justify-content:center;z-index:100;padding:20px;
+  }
+  .modal-overlay.active{display:flex;}
+  .modal{
+    background:var(--card);border-radius:var(--radius);
+    width:100%;max-width:440px;padding:34px;
+    position:relative;
+  }
+  .modal-close{position:absolute;top:18px;right:18px;background:none;border:none;color:var(--muted);}
+  .modal-close svg{width:18px;height:18px;}
+  .modal h3{font-size:22px;margin-bottom:6px;}
+  .modal p.modal-sub{font-size:14px;color:var(--muted);margin-bottom:24px;}
+  .field{margin-bottom:16px;}
+  .field label{display:block;font-size:12.5px;font-weight:600;margin-bottom:7px;}
+  .field input,.field select{
+    width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:var(--radius);
+    font-family:'Inter',sans-serif;font-size:14px;background:#FBFAF7;
+  }
+  .field input:focus,.field select:focus{outline:2px solid var(--wine);outline-offset:1px;}
+  .modal .btn{width:100%;margin-top:6px;}
+  .modal-success{display:none;text-align:center;padding:20px 0;}
+  .modal-success.active{display:block;}
+  .modal-success svg{width:40px;height:40px;color:var(--good);margin:0 auto 16px;}
+  .modal-switch{margin-top:18px;text-align:center;font-size:13px;color:var(--muted);}
+  .modal-switch a{color:var(--wine);font-weight:600;}
+  .modal-switch a:hover{text-decoration:underline;}
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:900px){
+    .nav-links{display:none;}
+    .nav-toggle{display:flex;}
+    .hero-grid{grid-template-columns:1fr;}
+    .kpi-row{grid-template-columns:1fr;}
+    .kpi{border-right:none;border-bottom:1px solid rgba(255,255,255,0.16);}
+    .stats-grid{grid-template-columns:repeat(2,1fr);}
+    .stat{border-bottom:1px solid var(--line);}
+    .stat:nth-child(2){border-right:none;}
+    .panels{grid-template-columns:1fr;}
+    .dash-body{grid-template-columns:1fr;}
+    .dash-col+.dash-col{border-left:none;border-top:1px solid var(--line);}
+    .steps{grid-template-columns:1fr 1fr;}
+    .step{border-bottom:1px solid var(--line);padding-bottom:24px;}
+    .int-grid{grid-template-columns:1fr;}
+    .pricing-grid{grid-template-columns:1fr;}
+    .footer-grid{grid-template-columns:1fr 1fr;}
+  }
+  @media (max-width:560px){
+    .wrap{padding:0 20px;}
+    section{padding:64px 0;}
+    .stats-grid{grid-template-columns:1fr;}
+    .steps{grid-template-columns:1fr;}
+    .footer-grid{grid-template-columns:1fr;}
+    .trust-inner{flex-direction:column;align-items:flex-start;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation-duration:0.01ms !important;transition-duration:0.01ms !important;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header>
+  <div class="wrap nav">
+    <a href="#top" class="logo" aria-label="Facsion AI home">
+      <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+        <rect x="2" y="16" width="5" height="12" fill="#5C1A34"/>
+        <rect x="9" y="9" width="5" height="19" fill="#A9824C"/>
+        <rect x="16" y="3" width="5" height="25" fill="#5C1A34"/>
+        <rect x="23" y="12" width="5" height="16" fill="#A9824C"/>
+      </svg>
+      <span class="logo-word">Facsion<span> AI</span></span>
+    </a>
+    <nav class="nav-links">
+      <a href="#product">Product</a>
+      <a href="#how">How it works</a>
+      <a href="#security">Security</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-cta">
+      <button class="btn btn-ghost btn-sm" onclick="openModal('loginModal')">Log in</button>
+      <button class="btn btn-primary btn-sm" onclick="openModal('signupModal')">Sign up</button>
+      <button class="nav-toggle" aria-label="Menu" onclick="toggleMobileNav()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <div class="wrap">
+    <div class="hero-grid">
+      <p class="eyebrow on-wine" style="justify-content:center;">Inventory intelligence for fashion</p>
+      <h1>Know what to reorder <em>before</em> you run out.</h1>
+      <p class="hero-sub">Facsion AI reads your sales and inventory data every night and tells you exactly which styles, sizes, and colours to reorder, markdown, or move — before the spreadsheet does.</p>
+      <div class="hero-ctas">
+        <button class="btn btn-wine" onclick="openModal('signupModal')">Sign up free</button>
+        <button class="btn btn-ghost-wine" onclick="openModal('loginModal')">Log in</button>
+      </div>
+      <p class="hero-note">No credit card required · Connects to your existing POS or CSV export</p>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="kpi-num"><span class="counter" data-target="94">0</span>%</div>
+        <div class="kpi-label">Demand forecast accuracy</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-num">-<span class="counter" data-target="23">0</span>%</div>
+        <div class="kpi-label">Reduction in overstock, avg. 90 days</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-num"><span class="counter" data-target="32" data-decimal="1">0</span>x</div>
+        <div class="kpi-label">Faster reorder decisions</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROBLEM STATS ============ -->
+<div class="stats-band">
+  <div class="wrap">
+    <div class="stats-grid">
+      <div class="stat">
+        <div class="stat-num">21<sup>%</sup></div>
+        <div class="stat-text">of fashion inventory value sits in slow-moving stock at any given time</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">8.5<sup>hrs</sup></div>
+        <div class="stat-text">spent weekly per planner reconciling sales sheets across sizes and colours</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">1 in 6</div>
+        <div class="stat-text">bestsellers go out of stock before the season peak, without warning</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">40<sup>%</sup></div>
+        <div class="stat-text">average markdown taken on styles that were overproduced against demand</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PRODUCT ============ -->
+<section id="product">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">The dashboard</p>
+      <h2>Every decision your planning team makes, in one view.</h2>
+      <p>Upload sales and inventory data once. Facsion AI keeps it current and surfaces what actually needs a decision this week.</p>
+    </div>
+
+    <div class="dash">
+      <div class="dash-top">
+        <div class="dash-dots"><span></span><span></span><span></span></div>
+        <span class="dash-title">fascionai.online/dashboard · Example workspace</span>
+        <span class="mono" style="font-size:12px;color:var(--muted)">Sample data</span>
+      </div>
+      <div class="dash-body">
+        <div class="dash-col">
+          <div class="dash-row-title">Attention needed</div>
+          <div class="sku-row">
+            <div class="sku-name">Kira Wrap Dress <small>Terracotta · UK 10–14</small></div>
+            <span class="tag risk">Stockout in 6 days</span>
+          </div>
+          <div class="sku-row">
+            <div class="sku-name">Oslo Wool Coat <small>Charcoal · All sizes</small></div>
+            <span class="tag watch">Reorder window closing</span>
+          </div>
+          <div class="sku-row">
+            <div class="sku-name">Reyna Silk Blouse <small>Ivory · UK 6–8</small></div>
+            <span class="tag risk">Overstock, 118 units</span>
+          </div>
+          <div class="sku-row">
+            <div class="sku-name">Petra Denim Jacket <small>Mid-wash · UK 12</small></div>
+            <span class="tag good">Trending +34% WoW</span>
+          </div>
+          <div class="sku-row">
+            <div class="sku-name">Milo Knit Vest <small>Sage · UK 8–10</small></div>
+            <span class="tag watch">Size curve imbalance</span>
+          </div>
+        </div>
+        <div class="dash-col">
+          <div class="dash-row-title">Sell-through — Kira Wrap Dress</div>
+          <div class="bars">
+            <div class="bar" style="height:38%"></div>
+            <div class="bar" style="height:52%"></div>
+            <div class="bar" style="height:44%"></div>
+            <div class="bar" style="height:61%"></div>
+            <div class="bar" style="height:70%"></div>
+            <div class="bar" style="height:66%"></div>
+            <div class="bar now" style="height:88%"></div>
+          </div>
+          <div class="bars-labels">
+            <span>W1</span><span>W2</span><span>W3</span><span>W4</span><span>W5</span><span>W6</span><span>W7</span>
+          </div>
+          <div class="panel-figure" style="margin-top:20px;">
+            <span>Projected stockout</span><b class="down">6 days</b>
+          </div>
+          <div class="panel-figure">
+            <span>Recommended reorder</span><b class="up">+240 units</b>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panels" style="margin-top:22px;">
+      <div class="panel">
+        <div class="panel-icon good">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>
+        </div>
+        <h3>Best-performing products</h3>
+        <p>See which styles, colours, and sizes are outselling forecast in real time, ranked by velocity and margin.</p>
+      </div>
+      <div class="panel">
+        <div class="panel-icon risk">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 7 9 13 13 9 21 17"/><polyline points="14 17 21 17 21 10"/></svg>
+        </div>
+        <h3>Slow-moving inventory</h3>
+        <p>Flag styles falling behind their sell-through curve early enough to act with a promotion or reallocation.</p>
+      </div>
+      <div class="panel">
+        <div class="panel-icon brass">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="1"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="9" x2="9" y2="21"/></svg>
+        </div>
+        <h3>Overstock risk</h3>
+        <p>Catch overbuys by size and colour before they turn into season-end markdowns, with a suggested action.</p>
+      </div>
+      <div class="panel">
+        <div class="panel-icon risk">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/></svg>
+        </div>
+        <h3>Stockout risk</h3>
+        <p>Get a countdown on every bestseller heading toward a stockout, with lead time already factored in.</p>
+      </div>
+      <div class="panel">
+        <div class="panel-icon good">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l4-6 4 3 5-8"/></svg>
+        </div>
+        <h3>Sales trends</h3>
+        <p>Track demand shifts by category, region, and channel as they happen — not three weeks after the fact.</p>
+      </div>
+      <div class="panel">
+        <div class="panel-icon brass">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10M18 20V4M6 20v-4"/></svg>
+        </div>
+        <h3>Inventory recommendations &amp; demand forecast</h3>
+        <p>Every alert ships with a suggested reorder quantity, markdown depth, or transfer — ready to action.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section id="how" style="background:var(--card);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">How it works</p>
+      <h2>From raw sales data to a reorder decision in four steps.</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num mono">01 / Connect</div>
+        <h3>Connect your data</h3>
+        <p>Sync your POS, e-commerce platform, or upload a CSV export. Most teams are live within a day.</p>
+      </div>
+      <div class="step">
+        <div class="step-num mono">02 / Analyse</div>
+        <h3>Facsion AI analyses</h3>
+        <p>Sell-through, size curves, and seasonality are modelled overnight, style by style, SKU by SKU.</p>
+      </div>
+      <div class="step">
+        <div class="step-num mono">03 / Review</div>
+        <h3>Review what needs action</h3>
+        <p>Each morning, your dashboard surfaces only the styles that need a reorder, markdown, or transfer.</p>
+      </div>
+      <div class="step">
+        <div class="step-num mono">04 / Act</div>
+        <h3>Act with a number, not a guess</h3>
+        <p>Every recommendation comes with a quantity and a reason, exportable straight to your buying sheet.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECURITY & DATA ============ -->
+<section id="security" class="integrations">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow on-wine" style="border-left-color:var(--brass);">Security &amp; data</p>
+      <h2>Your sales and inventory data stays yours.</h2>
+      <p>Facsion AI is built to hold sensitive commercial data responsibly, from the first upload.</p>
+    </div>
+    <div class="int-grid">
+      <div class="int-card">
+        <h4>Encrypted in transit &amp; at rest</h4>
+        <p>Every upload and every stored record is encrypted, so your sales and inventory numbers stay private end to end.</p>
+      </div>
+      <div class="int-card">
+        <h4>You own your data</h4>
+        <p>Export everything you've uploaded at any time, or permanently delete your workspace with one request.</p>
+      </div>
+      <div class="int-card">
+        <h4>Role-based access</h4>
+        <p>Give buyers, planners, and finance exactly the visibility they need, and nothing more, from day one.</p>
+      </div>
+      <div class="int-card">
+        <h4>No data sharing</h4>
+        <p>Your catalogue and sales history are never sold, shared, or used to train models for other companies.</p>
+      </div>
+      <div class="int-card">
+        <h4>CSV in, CSV out</h4>
+        <p>No lock-in. Bring your data in from any POS or e-commerce export, and take it with you the same way.</p>
+      </div>
+      <div class="int-card">
+        <h4>Built to scale up</h4>
+        <p>Single sign-on, audit logs, and formal compliance certifications are on our roadmap as we grow with larger teams.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section id="pricing">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Pricing</p>
+      <h2>Priced for the size of your catalogue, not your headcount.</h2>
+      <p>Start free. Move to a paid plan when you're ready to connect live data and get reorder recommendations.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-name">Starter</div>
+        <div class="price-amount">£0<span>/month</span></div>
+        <p class="price-desc">Explore the dashboard with sample data or a single CSV upload.</p>
+        <ul class="price-list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Up to 100 SKUs</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Manual CSV upload</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Best &amp; slow movers view</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Weekly refresh</li>
+        </ul>
+        <button class="btn btn-ghost" onclick="openModal('signupModal')">Sign up free</button>
+      </div>
+      <div class="price-card featured">
+        <span class="price-badge">Most popular</span>
+        <div class="price-name">Growth</div>
+        <div class="price-amount">$47<span>/month</span></div>
+        <p class="price-desc">For a single brand or retailer managing one active catalogue.</p>
+        <ul class="price-list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Up to 2,500 SKUs</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Live POS &amp; e-commerce sync</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Stockout &amp; overstock alerts</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Reorder &amp; markdown recommendations</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Daily refresh</li>
+        </ul>
+        <button class="btn btn-primary" onclick="openModal('signupModal')">Sign up free</button>
+      </div>
+      <div class="price-card">
+        <div class="price-name">Pro</div>
+        <div class="price-amount">$97<span>/month</span></div>
+        <p class="price-desc">For multi-brand portfolios or teams needing enterprise controls.</p>
+        <ul class="price-list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Unlimited SKUs</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Multi-brand &amp; multi-region</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Microsoft Entra ID SSO &amp; SCIM</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Power BI &amp; Dynamics 365 sync</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Priority support</li>
+        </ul>
+        <button class="btn btn-ghost" onclick="openModal('signupModal')">Sign up free</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section id="faq">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Questions</p>
+      <h2>Frequently asked</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">What data do I need to get started?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+        <div class="faq-a"><p>A sales history export (SKU, size, colour, date, units sold) and current stock on hand. Most teams start with a CSV from their POS or Shopify export and connect a live sync afterward.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Does Facsion AI place orders automatically?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+        <div class="faq-a"><p>No. Facsion AI surfaces the recommendation and quantity; your buying team decides. Every suggestion can be exported to your existing buying sheet or purchase order system.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">How is this different from my POS reporting?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+        <div class="faq-a"><p>POS reporting tells you what happened. Facsion AI models size curves and seasonality to tell you what to do next — which units to reorder, which to mark down, and by when.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Can I use this across multiple brands or regions?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+        <div class="faq-a"><p>Yes, on the Pro plan. You can separate catalogues by brand or region while viewing consolidated performance across your full portfolio.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">What does the free plan include?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+        <div class="faq-a"><p>Up to 100 SKUs, manual CSV uploads, and a weekly refresh — enough to see best and slow movers before committing to a live sync.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="cta-band">
+  <div class="wrap">
+    <h2>Stop finding out about a stockout after it happens.</h2>
+    <p>Set up Facsion AI today — free plan, no card required.</p>
+    <div class="cta-actions">
+      <button class="btn btn-wine" onclick="openModal('signupModal')">Sign up free</button>
+      <button class="btn btn-ghost-wine" onclick="openModal('loginModal')">Log in</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#top" class="logo">
+          <svg width="26" height="26" viewBox="0 0 30 30" fill="none">
+            <rect x="2" y="16" width="5" height="12" fill="#5C1A34"/>
+            <rect x="9" y="9" width="5" height="19" fill="#A9824C"/>
+            <rect x="16" y="3" width="5" height="25" fill="#5C1A34"/>
+            <rect x="23" y="12" width="5" height="16" fill="#A9824C"/>
+          </svg>
+          <span class="logo-word">Facsion<span> AI</span></span>
+        </a>
+        <p>Inventory intelligence for fashion retailers and brands. Know what to reorder, mark down, or move — before the season decides for you.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Product</h5>
+        <a href="#product">Dashboard</a>
+        <a href="#how">How it works</a>
+        <a href="#security">Security</a>
+        <a href="#pricing">Pricing</a>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <a href="#">About</a>
+        <a href="#">Careers</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h5>Resources</h5>
+        <a href="#">Help centre</a>
+        <a href="#">API docs</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Security</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Facsion AI. All rights reserved.</span>
+      <span>Made for fashion retailers and brands.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ MODALS ============ -->
+<div class="modal-overlay" id="signupModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('signupModal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <div class="modal-form">
+      <h3>Create your account</h3>
+      <p class="modal-sub">Set up your workspace in under two minutes.</p>
+      <form onsubmit="handleSubmit(event,'signupModal')">
+        <div class="field"><label>Work email</label><input type="email" required placeholder="you@yourbrand.com"></div>
+        <div class="field"><label>Password</label><input type="password" required placeholder="At least 8 characters" minlength="8"></div>
+        <div class="field"><label>Company name</label><input type="text" required placeholder="Your brand or store name"></div>
+        <div class="field"><label>Catalogue size</label>
+          <select>
+            <option>Under 100 SKUs</option>
+            <option>100–2,500 SKUs</option>
+            <option>2,500+ SKUs</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Create free account</button>
+      </form>
+      <p class="modal-switch">Already have an account? <a href="#" onclick="event.preventDefault(); closeModal('signupModal'); openModal('loginModal');">Log in</a></p>
+    </div>
+    <div class="modal-success">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="8 12 11 15 16 9"/></svg>
+      <h3>You're in</h3>
+      <p class="modal-sub">Check your inbox to confirm your email, then connect your first data source.</p>
+      <button class="btn btn-ghost" onclick="closeModal('signupModal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="loginModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('loginModal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <div class="modal-form">
+      <h3>Log in</h3>
+      <p class="modal-sub">Welcome back — pick up where you left off.</p>
+      <form onsubmit="handleSubmit(event,'loginModal')">
+        <div class="field"><label>Work email</label><input type="email" required placeholder="you@yourbrand.com"></div>
+        <div class="field"><label>Password</label><input type="password" required placeholder="Your password"></div>
+        <button type="submit" class="btn btn-primary">Log in</button>
+      </form>
+      <p class="modal-switch"><a href="#">Forgot password?</a> &nbsp;·&nbsp; New here? <a href="#" onclick="event.preventDefault(); closeModal('loginModal'); openModal('signupModal');">Sign up</a></p>
+    </div>
+    <div class="modal-success">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="8 12 11 15 16 9"/></svg>
+      <h3>Welcome back</h3>
+      <p class="modal-sub">You're logged in. Taking you to your dashboard.</p>
+      <button class="btn btn-ghost" onclick="closeModal('loginModal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // KPI counters
+  function animateCounters(){
+    document.querySelectorAll('.counter').forEach(function(el){
+      var target = parseFloat(el.getAttribute('data-target'));
+      var decimals = el.getAttribute('data-decimal') ? 1 : 0;
+      var isDecimalScaled = el.getAttribute('data-decimal') === '1';
+      var duration = 1400;
+      var start = null;
+      function step(ts){
+        if(!start) start = ts;
+        var progress = Math.min((ts-start)/duration, 1);
+        var current = target * progress;
+        if(isDecimalScaled){
+          el.textContent = (current/10).toFixed(1);
+        } else {
+          el.textContent = Math.floor(current);
+        }
+        if(progress < 1) requestAnimationFrame(step);
+        else {
+          el.textContent = isDecimalScaled ? (target/10).toFixed(1) : target;
+        }
+      }
+      requestAnimationFrame(step);
+    });
+  }
+  var counted = false;
+  var kpiSection = document.querySelector('.kpi-row');
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting && !counted){
+        counted = true;
+        animateCounters();
+      }
+    });
+  }, {threshold:0.4});
+  if(kpiSection) io.observe(kpiSection);
+
+  // FAQ accordion
+  function toggleFaq(btn){
+    var item = btn.closest('.faq-item');
+    var answer = item.querySelector('.faq-a');
+    var isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(function(el){
+      el.classList.remove('open');
+      el.querySelector('.faq-a').style.maxHeight = null;
+    });
+    if(!isOpen){
+      item.classList.add('open');
+      answer.style.maxHeight = answer.scrollHeight + 'px';
+    }
+  }
+
+  // Modals
+  function openModal(id){
+    document.getElementById(id).classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(id){
+    document.getElementById(id).classList.remove('active');
+    document.body.style.overflow = '';
+    var modal = document.getElementById(id);
+    modal.querySelector('.modal-form').style.display = 'block';
+    modal.querySelector('.modal-success').classList.remove('active');
+    modal.querySelector('form').reset();
+  }
+  document.querySelectorAll('.modal-overlay').forEach(function(overlay){
+    overlay.addEventListener('click', function(e){
+      if(e.target === overlay) closeModal(overlay.id);
+    });
+  });
+  function handleSubmit(e, id){
+    e.preventDefault();
+    // Front-end only. Wire this form action to your Formspree endpoint to receive submissions.
+    var modal = document.getElementById(id);
+    modal.querySelector('.modal-form').style.display = 'none';
+    modal.querySelector('.modal-success').classList.add('active');
+  }
+
+  // Mobile nav (simple toggle fallback)
+  function toggleMobileNav(){
+    var links = document.querySelector('.nav-links');
+    if(links.style.display === 'flex'){
+      links.style.display = 'none';
+    } else {
+      links.style.display = 'flex';
+      links.style.position = 'absolute';
+      links.style.top = '64px';
+      links.style.left = '0';
+      links.style.right = '0';
+      links.style.background = 'var(--paper)';
+      links.style.flexDirection = 'column';
+      links.style.padding = '20px 32px';
+      links.style.borderBottom = '1px solid var(--line)';
+      links.style.gap = '18px';
+    }
+  }
+</script>
+</body>
+</html>
