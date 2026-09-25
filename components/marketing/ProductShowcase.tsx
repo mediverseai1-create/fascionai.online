@@ -18,8 +18,8 @@ const PANELS: {
 }[] = [
   {
     variant: "good",
-    title: "Best-performing products",
-    desc: "See which styles, colours, and sizes are outselling forecast in real time, ranked by velocity and margin.",
+    title: "AI Product Intelligence",
+    desc: "AI ranks every style, colour, and size by real sell-through velocity and margin, so you know what's actually outperforming forecast.",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
         <polyline points="3 17 9 11 13 15 21 7" />
@@ -29,8 +29,8 @@ const PANELS: {
   },
   {
     variant: "risk",
-    title: "Slow-moving inventory",
-    desc: "Flag styles falling behind their sell-through curve early enough to act with a promotion or reallocation.",
+    title: "AI-Detected Slow Movers",
+    desc: "AI flags styles falling behind their sell-through curve early enough to act with a promotion or reallocation, before they become dead stock.",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
         <polyline points="3 7 9 13 13 9 21 17" />
@@ -40,8 +40,8 @@ const PANELS: {
   },
   {
     variant: "brass",
-    title: "Overstock risk",
-    desc: "Catch overbuys by size and colour before they turn into season-end markdowns, with a suggested action.",
+    title: "AI Overstock Detection",
+    desc: "AI catches overbuys by size and colour before they turn into season-end markdowns, with a suggested action attached.",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
         <rect x="3" y="3" width="18" height="18" rx="1" />
@@ -52,8 +52,8 @@ const PANELS: {
   },
   {
     variant: "risk",
-    title: "Stockout risk",
-    desc: "Get a countdown on every bestseller heading toward a stockout, with lead time already factored in.",
+    title: "AI Stockout Prediction",
+    desc: "AI calculates a projected stockout date for every bestseller from your actual sales velocity and lead time — not a guess.",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
         <path d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" />
@@ -62,8 +62,8 @@ const PANELS: {
   },
   {
     variant: "good",
-    title: "Sales trends",
-    desc: "Track demand shifts by category, region, and channel as they happen — not three weeks after the fact.",
+    title: "AI Sales Trend Detection",
+    desc: "AI tracks demand shifts by category and channel as your data changes — not three weeks after the fact.",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
         <path d="M3 3v18h18" />
@@ -73,8 +73,8 @@ const PANELS: {
   },
   {
     variant: "brass",
-    title: "Inventory recommendations & demand forecast",
-    desc: "Every alert ships with a suggested reorder quantity, markdown depth, or transfer — ready to action.",
+    title: "AI Reorder Recommendations",
+    desc: "Every alert ships with a specific reorder quantity or markdown depth, calculated from your own data and ready to action.",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
         <path d="M12 20V10M18 20V4M6 20v-4" />
@@ -88,13 +88,13 @@ export function ProductShowcase() {
     <section id="product" className="py-16 sm:py-24">
       <div className="wrap">
         <div className="max-w-[620px] mb-[52px]">
-          <Eyebrow>The dashboard</Eyebrow>
+          <Eyebrow>AI at work</Eyebrow>
           <h2 className="text-[clamp(26px,3vw,36px)] leading-[1.18]">
-            Every decision your planning team makes, in one view.
+            AI turns raw sales and stock data into decisions your team can act on.
           </h2>
           <p className="mt-3.5 text-base text-muted leading-[1.6]">
-            Upload sales and inventory data once. Facsion AI keeps it current and surfaces what
-            actually needs a decision this week.
+            Connect your data once. Facsion AI&apos;s analysis engine keeps it current and
+            continuously surfaces what actually needs a decision this week.
           </p>
         </div>
 

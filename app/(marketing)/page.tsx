@@ -1,3 +1,5 @@
+import { AiIntelligenceSection } from "@/components/marketing/AiIntelligenceSection";
+import { BuiltForBusinessSection } from "@/components/marketing/BuiltForBusinessSection";
 import { CtaBand } from "@/components/marketing/CtaBand";
 import { FaqSection } from "@/components/marketing/FaqSection";
 import { Hero } from "@/components/marketing/Hero";
@@ -15,8 +17,10 @@ export default function MarketingHome() {
       <SiteHeader />
       <Hero />
       <ProblemStats />
+      <AiIntelligenceSection />
       <ProductShowcase />
       <HowItWorks />
+      <BuiltForBusinessSection />
       <SecuritySection />
       <PricingSection />
       <FaqSection />

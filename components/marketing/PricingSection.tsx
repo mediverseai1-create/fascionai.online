@@ -20,7 +20,7 @@ export function PricingSection() {
           </h2>
           <p className="mt-3.5 text-base text-muted leading-[1.6]">
             Start free. Move to a paid plan when you&apos;re ready to connect live data and get
-            reorder recommendations.
+            AI-generated reorder recommendations.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[22px] items-stretch">

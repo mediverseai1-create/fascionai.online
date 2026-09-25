@@ -5,10 +5,11 @@ export function CtaBand() {
     <section className="bg-wine text-white text-center py-16 sm:py-24">
       <div className="wrap">
         <h2 className="text-white text-[clamp(26px,3.4vw,38px)] max-w-[620px] mx-auto leading-[1.2]">
-          Stop finding out about a stockout after it happens.
+          Stop reading reports. Let AI tell you what to reorder next.
         </h2>
         <p className="mt-3.5 text-white/72 text-[15.5px]">
-          Set up Facsion AI today — free plan, no card required.
+          Facsion AI turns your sales and inventory data into decisions your team can act on today
+          — free plan, no card required.
         </p>
         <div className="flex gap-3.5 justify-center mt-[30px]">
           <ButtonLink href="/signup" variant="wine">

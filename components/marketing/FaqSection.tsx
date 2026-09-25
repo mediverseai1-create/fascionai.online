@@ -6,23 +6,27 @@ import { Eyebrow } from "@/components/ui/Eyebrow";
 const FAQS = [
   {
     q: "What data do I need to get started?",
-    a: "A sales history export (SKU, size, colour, date, units sold) and current stock on hand. Most teams start with a CSV from their POS or Shopify export and connect a live sync afterward.",
+    a: "A sales history export (SKU, size, colour, date, units sold) and current stock on hand. Most teams start with a CSV from their POS or Shopify export, and the AI picks it up automatically from there.",
   },
   {
     q: "Does Facsion AI place orders automatically?",
-    a: "No. Facsion AI surfaces the recommendation and quantity; your buying team decides. Every suggestion can be exported to your existing buying sheet or purchase order system.",
+    a: "No. The AI generates the recommendation and quantity; your buying team decides. Every suggestion can be exported to your existing buying sheet or purchase order system.",
   },
   {
     q: "How is this different from my POS reporting?",
-    a: "POS reporting tells you what happened. Facsion AI models size curves and seasonality to tell you what to do next — which units to reorder, which to mark down, and by when.",
+    a: "POS reporting tells you what happened. Facsion AI's analysis engine continuously models size curves, seasonality, and sell-through to tell you what to do next — which units to reorder, which to mark down, and by when.",
+  },
+  {
+    q: "Is the AI making things up, or is it based on my real data?",
+    a: "Every number you see — sell-through, stockout dates, reorder quantities — is calculated directly from your own sales and inventory records first. The AI only writes the plain-language summary on top of numbers that are already correct; it never invents a statistic.",
   },
   {
     q: "Can I use this across multiple brands or regions?",
-    a: "Yes, on the Pro plan. You can separate catalogues by brand or region while viewing consolidated performance across your full portfolio.",
+    a: "Yes, on the Pro plan. You can separate catalogues by brand or region while the AI still gives you consolidated performance across your full portfolio.",
   },
   {
     q: "What does the free plan include?",
-    a: "Up to 100 SKUs, manual CSV uploads, and a weekly refresh — enough to see best and slow movers before committing to a live sync.",
+    a: "Up to 100 SKUs, manual CSV uploads, and a weekly refresh — enough to see AI-generated best and slow movers before committing to a live sync.",
   },
 ];
 

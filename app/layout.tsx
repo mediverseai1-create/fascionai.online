@@ -22,9 +22,9 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Facsion AI — Inventory Intelligence for Fashion Retail",
+  title: "Facsion AI — AI Inventory Intelligence for Fashion Businesses",
   description:
-    "Facsion AI turns your sales and inventory data into clear reorder, markdown, and allocation decisions — built for fashion retailers and brands.",
+    "Facsion AI continuously analyzes your sales and inventory data to predict stockouts, detect overstock, and turn the analysis into reorder and markdown decisions — built for fashion retailers and brands.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

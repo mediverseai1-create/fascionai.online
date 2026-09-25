@@ -40,7 +40,7 @@ export function SecuritySection() {
           </h2>
           <p className="mt-3.5 text-base text-white/60 leading-[1.6]">
             Facsion AI is built to hold sensitive commercial data responsibly, from the first
-            upload.
+            upload — including everything our AI analyzes on your behalf.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-[22px] mt-2.5">

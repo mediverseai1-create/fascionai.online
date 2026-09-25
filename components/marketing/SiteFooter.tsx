@@ -4,6 +4,7 @@ const FOOTER_COLUMNS = [
   {
     heading: "Product",
     links: [
+      { href: "#ai", label: "AI Intelligence" },
       { href: "#product", label: "Dashboard" },
       { href: "#how", label: "How it works" },
       { href: "#security", label: "Security" },
@@ -44,8 +45,9 @@ export function SiteFooter() {
           <div>
             <Logo small />
             <p className="mt-3.5 text-[13.5px] text-muted max-w-[220px] leading-[1.55]">
-              Inventory intelligence for fashion retailers and brands. Know what to reorder, mark
-              down, or move — before the season decides for you.
+              AI-native inventory intelligence for fashion retailers and brands. The AI analyzes
+              your data and tells you what to reorder, mark down, or move — before the season
+              decides for you.
             </p>
           </div>
           {FOOTER_COLUMNS.map((col) => (

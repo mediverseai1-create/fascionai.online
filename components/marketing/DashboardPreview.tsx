@@ -58,8 +58,13 @@ export function DashboardPreview() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-[1.3fr_1fr]">
         <div className="p-6">
-          <div className="text-[12.5px] font-mono uppercase tracking-[0.06em] text-muted mb-4">
-            Attention needed
+          <div className="flex items-center gap-2 mb-4">
+            <span className="text-[12.5px] font-mono uppercase tracking-[0.06em] text-muted">
+              Attention needed
+            </span>
+            <span className="text-[10px] font-mono uppercase tracking-[0.06em] text-brass bg-brass-soft px-1.5 py-0.5 rounded-[2px]">
+              AI-flagged
+            </span>
           </div>
           {ATTENTION_ROWS.map((row, i) => (
             <div
@@ -99,11 +104,11 @@ export function DashboardPreview() {
             ))}
           </div>
           <div className="flex justify-between font-mono text-[13px] text-ink mt-5 pt-3.5 border-t border-line">
-            <span>Projected stockout</span>
+            <span>AI-projected stockout</span>
             <b className="text-risk">6 days</b>
           </div>
           <div className="flex justify-between font-mono text-[13px] text-ink mt-4 pt-3.5 border-t border-line">
-            <span>Recommended reorder</span>
+            <span>AI-recommended reorder</span>
             <b className="text-good">+240 units</b>
           </div>
         </div>

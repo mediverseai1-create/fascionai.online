@@ -6,6 +6,7 @@ import { ButtonLink } from "@/components/ui/Button";
 import { Logo } from "./Logo";
 
 const NAV_LINKS = [
+  { href: "#ai", label: "AI Intelligence" },
   { href: "#product", label: "Product" },
   { href: "#how", label: "How it works" },
   { href: "#security", label: "Security" },
@@ -20,7 +21,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 bg-paper/92 backdrop-blur-[8px] border-b border-line">
       <div className="wrap flex items-center justify-between py-4 relative">
         <Logo />
-        <nav className="hidden md:flex items-center gap-[34px]">
+        <nav className="hidden lg:flex items-center gap-[26px]">
           {NAV_LINKS.map((link) => (
             <a
               key={link.href}
@@ -32,14 +33,14 @@ export function SiteHeader() {
           ))}
         </nav>
         <div className="flex items-center gap-3">
-          <ButtonLink href="/login" variant="ghost" size="sm" className="hidden md:inline-flex">
+          <ButtonLink href="/login" variant="ghost" size="sm" className="hidden lg:inline-flex">
             Log in
           </ButtonLink>
-          <ButtonLink href="/signup" variant="primary" size="sm" className="hidden md:inline-flex">
+          <ButtonLink href="/signup" variant="primary" size="sm" className="hidden lg:inline-flex">
             Sign up
           </ButtonLink>
           <button
-            className="md:hidden flex bg-transparent border-none p-1.5 text-ink"
+            className="lg:hidden flex bg-transparent border-none p-1.5 text-ink"
             aria-label="Menu"
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
@@ -53,7 +54,7 @@ export function SiteHeader() {
         </div>
 
         {open && (
-          <div className="md:hidden absolute top-16 left-0 right-0 bg-paper border-b border-line flex flex-col gap-[18px] px-8 py-5">
+          <div className="lg:hidden absolute top-16 left-0 right-0 bg-paper border-b border-line flex flex-col gap-[18px] px-8 py-5">
             {NAV_LINKS.map((link) => (
               <a
                 key={link.href}
